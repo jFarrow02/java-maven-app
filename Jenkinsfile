@@ -1,3 +1,5 @@
+def gv
+
 pipeline {
 
     agent any
@@ -11,11 +13,20 @@ pipeline {
         maven 'maven-3.8.4(default)'
     }
     stages {
+        stage("init") {
+            steps {
+                script {
+                    gv = load "script.groovy"
+                }
+            }
+        }
 
         stage("build") {
             steps {
-                echo "building version ${params.VERSION}" // reference env vars by enclosing in double quotes
-
+                // echo "building version ${params.VERSION}" // reference env vars by enclosing in double quotes
+                script {
+                    gv.buildApp()
+                }
             }
         }
 
@@ -27,7 +38,10 @@ pipeline {
                 }
             }
             steps {
-                echo "testing application..."
+                // echo "testing application..."
+                script {
+                    gv.testApp()
+                }
             }
         }
 
@@ -38,7 +52,8 @@ pipeline {
                 usernamePassword(credentialsId: 'server-credentials', usernameVariable: 'USER', passwordVariable: 'PWD')
                 ])
                 {
-                    echo "deploying with ${USER}/${PWD}..."
+                    // echo "deploying with ${USER}/${PWD}..."
+                    gv.deployApp()
                 }
             }
         }
