@@ -53,7 +53,9 @@ pipeline {
                 ])
                 {
                     // echo "deploying with ${USER}/${PWD}..."
-                    gv.deployApp()
+                    script {
+                        gv.deployApp()
+                    }
                 }
             }
         }
