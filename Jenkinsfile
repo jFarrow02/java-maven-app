@@ -1,3 +1,5 @@
+def gv
+
 pipeline {
 
     agent any
@@ -12,11 +14,14 @@ pipeline {
     }
 
     stages {
+        stage("init") {
+            gv = load "pipeline-script.groovy"
+        }
+
         stage("build jar") {
             steps {
                 script {
-                    echo "building the application..."
-                    sh "mvn package"
+                   gv.buildJar()
                 }
             }
         }
@@ -28,9 +33,7 @@ pipeline {
                     withCredentials([
                         usernamePassword(credentialsId: 'nexus-my-docker-hostedrepo', usernameVariable: 'USER', passwordVariable: 'PWD')
                     ]) {
-                        sh "docker build -t $IMAGE_NAME ."
-                        sh "echo $PWD docker login -u $USER --password-stdin $HOST_PORT"
-                        sh "docker push $IMAGE_NAME"
+                        gv.buildAndPushImage()
                     }
                 }
             }
@@ -38,7 +41,7 @@ pipeline {
         stage("deploy") {
             steps {
                 script {
-                    echo "deploying the application..."
+                    gv.deployJar()
                 }
             }
         }
