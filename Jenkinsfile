@@ -28,11 +28,11 @@ pipeline {
         }
 
         stage("build image") {
-            when {
-                expression {
-                    BRANCH_NAME == "main" // env var available for all multibranch pipelines; holds currently-building branch name
-                }
-            }
+            // when {
+            //     expression {
+            //         BRANCH_NAME == "main" // env var available for all multibranch pipelines; holds currently-building branch name
+            //     }
+            // }
             steps {
                 script {
                     buildImage()
@@ -41,11 +41,11 @@ pipeline {
         }
 
         stage("deploy") {
-            when {
-                expression {
-                    BRANCH_NAME == "main" // env var available for all multibranch pipelines; holds currently-building branch name
-                }
-            }
+            // when {
+            //     expression {
+            //         BRANCH_NAME == "main" // env var available for all multibranch pipelines; holds currently-building branch name
+            //     }
+            // }
             steps {
                 script {
                     gv.deployApp()
