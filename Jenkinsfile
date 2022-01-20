@@ -32,11 +32,14 @@ pipeline {
         }
 
         stage("deploy") {
-            withCredentials([
+
+            steps {
+                withCredentials([
                 usernamePassword(credentials: 'server-credentials', usernameVariable: USER, passwordVariable: PWD)
-            ])
-            {
-                echo "deploying with ${USER}/${PWD}..."
+                ])
+                {
+                    echo "deploying with ${USER}/${PWD}..."
+                }
             }
         }
     }
