@@ -46,6 +46,8 @@ pipeline {
             //         BRANCH_NAME == "main" // env var available for all multibranch pipelines; holds currently-building branch name
             //     }
             // }
+            NEXUS = "18.221.41.70:8083"
+            IMAGE = "$NEXUS/java-maven-app:latest"
             steps {
                 script {
                     gv.deployApp()
