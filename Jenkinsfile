@@ -1,19 +1,26 @@
+@Library("jenkins-shared-library") // If pipeline is direct next step, annotation must end with "_"
+def gv
+
 pipeline {
 
     agent any
-    
+
     stages {
 
-        stage("test") {
+        stage("init") {
+            gv = load "script.groovy"
+        }
+
+        stage("build jar") {
             steps {
                 script {
-                    echo "Testing the application..."
                     echo "executing pipeline for branch $BRANCH_NAME"
+                    buildJar()
                 }
             }
         }
 
-        stage("build") {
+        stage("build image") {
             when {
                 expression {
                     BRANCH_NAME == "main" // env var available for all multibranch pipelines; holds currently-building branch name
@@ -21,7 +28,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Building the application..."
+                    buildImage()
                 }
             }
         }
@@ -34,7 +41,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Deploying the application..."
+                    gv.deployApp()
                 }
             }
         }
