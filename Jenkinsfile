@@ -1,5 +1,3 @@
-
-#!/usr/bin/env groovy
 @Library("jenkins-shared-library") // If pipeline is direct next step, annotation must end with "_"
 def gv
 
