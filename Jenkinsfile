@@ -29,7 +29,7 @@ pipeline {
                         usernamePassword(credentialsId: 'nexus-my-docker-hostedrepo', usernameVariable: 'USER', passwordVariable: 'PWD')
                     ]) {
                         sh "docker build -t $IMAGE_NAME ."
-                        sh "echo $PASS docker login -u $USER --password-stdin $HOST_PORT"
+                        sh "echo $PWD docker login -u $USER --password-stdin $HOST_PORT"
                         sh "docker push $IMAGE_NAME"
                     }
                 }
