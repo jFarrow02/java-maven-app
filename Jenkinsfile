@@ -40,7 +40,7 @@ pipeline {
             // }
             steps {
                 script {
-                    buildAndPushImage()
+                    buildAndPushImage(IMAGE, NEXUS)
                 }
             }
         }
