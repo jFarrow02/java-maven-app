@@ -5,6 +5,11 @@ pipeline {
 
     agent any
 
+    environment {
+        NEXUS = "18.221.41.70:8083"
+        IMAGE = "$NEXUS/java-maven-app:latest"
+    }
+
     tools {
         maven "maven-3.8.4(default)"
     }
@@ -48,10 +53,6 @@ pipeline {
             // }
             steps {
                 script {
-                    environment {
-                        NEXUS = "18.221.41.70:8083"
-                        IMAGE = "$NEXUS/java-maven-app:latest"
-                    }
                     gv.deployApp()
                 }
             }
