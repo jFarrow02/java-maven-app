@@ -15,7 +15,9 @@ pipeline {
 
     stages {
         stage("init") {
-            gv = load "pipeline-script.groovy"
+            steps {
+                gv = load "pipeline-script.groovy"
+            }
         }
 
         stage("build jar") {
