@@ -32,7 +32,7 @@ pipeline {
             }
         }
 
-        stage("build image") {
+        stage("build and pushimage") {
             // when {
             //     expression {
             //         BRANCH_NAME == "main" // env var available for all multibranch pipelines; holds currently-building branch name
@@ -40,7 +40,9 @@ pipeline {
             // }
             steps {
                 script {
-                    buildAndPushImage(IMAGE, NEXUS)
+                    buildDockerImage(IMAGE)
+                    dockerLogin(NEXUS)
+                    dockerPush(IMAGE)
                 }
             }
         }
