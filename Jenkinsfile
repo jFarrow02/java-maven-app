@@ -1,68 +1,44 @@
-def gv
-
 pipeline {
 
     agent any
 
-    parameters {
-        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: 'some version choices')
-        booleanParam(name: 'executeTests', defaultValue: true, description: '')
+    environment {
+        IMAGE_NAME='18.221.41.70:8083/java-maven-app:latest'
+        HOST_PORT='18.221.41.70:8083'
     }
 
     tools {
         maven 'maven-3.8.4(default)'
     }
+
     stages {
-        stage("init") {
+        stage("build jar") {
             steps {
                 script {
-                    gv = load "script.groovy"
+                    echo "building the application..."
+                    sh "mvn package"
                 }
             }
         }
 
-        stage("build") {
+        stage("build image") {
             steps {
-                // echo "building version ${params.VERSION}" // reference env vars by enclosing in double quotes
                 script {
-                    gv.buildApp()
-                }
-            }
-        }
-
-        stage("test") {
-            // Conditional; execute steps only when condition is true
-            when {
-                expression {
-                    params.executeTests == true
-                }
-            }
-            steps {
-                // echo "testing application..."
-                script {
-                    gv.testApp()
-                }
-            }
-        }
-
-        stage("deploy") {
-            input {
-                message "Select the deployment environment:"
-                ok "Done"
-                parameters {
-                    choice(name: "ENVIRONMENT", choices: ['dev', 'staging', 'prod'], description: "")
-                }
-            }
-            steps {
-                withCredentials([
-                usernamePassword(credentialsId: 'server-credentials', usernameVariable: 'USER', passwordVariable: 'PWD')
-                ])
-                {
-                    // echo "deploying with ${USER}/${PWD}..."
-                    script {
-                        gv.deployApp()
-                        echo "Deploying to env ${ENVIRONMENT}"
+                    echo "building the Docker image..."
+                    withCredentials([
+                        usernamePassword(credentialsId: 'nexus-my-docker-hostedrepo', usernameVariable: 'USER', passwordVariable: 'PWD')
+                    ]) {
+                        sh "docker build -t $IMAGE_NAME ."
+                        sh "echo $PASS docker login -u $USER --password-stdin $HOST_PORT"
+                        sh "docker push $IMAGE_NAME"
                     }
+                }
+            }
+        }
+        stage("deploy") {
+            steps {
+                script {
+                    echo "deploying the application..."
                 }
             }
         }
