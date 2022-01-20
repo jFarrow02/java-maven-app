@@ -35,7 +35,7 @@ pipeline {
             // }
             steps {
                 script {
-                    buildImage()
+                    buildAndPushImage()
                 }
             }
         }
